@@ -4,6 +4,7 @@
   * y devuelve en caso que haga falta un JSON al browser
   * que sera el encargado de procesarlo y mostrarlo
 */
+
  // Includeo las cosas necesarias
  // Conexion a la BD Mysql
  include("../includes/conectarDb.php");
@@ -20,7 +21,6 @@
  $recurso = array_shift($array_uri);
  $recurso = array_shift($array_uri);
 
-
  switch($metodo){
   case 'GET'://Metodo GET entra por aca
         $recurso = array_shift($array_uri);
@@ -28,25 +28,21 @@
         if($recurso == 'api'){
            $recurso = array_shift($array_uri);
            $nro_producto = array_shift($array_uri);
-           if(empty($nro_producto)){//pide lista completa
+           if(empty($nro_producto))//pide lista completa
               echo resuelveGet();
-           }
            else{
               //tengo que chequear que lo que siga tenga el formato de url requerido, sino, devuelvo un 400 
               if(is_numeric($nro_producto)){
-                if(count($array_uri)==0){
+                if(count($array_uri)==0)//si toda la url esta bien resuelvo el GET
                    echo resuelveGet($nro_producto);
-                }
                 else
                    header('HTTP/1.1 400 Bad Request');
               }
-              else{
+              else
                header('HTTP/1.1 400 Bad Request');
-              }
            }
-        }else{// Sólo se aceptan que comienzen con productos
+        }else// Sólo se aceptan que comienzen con productos
           header('HTTP/1.1 404 Not Found');
-        }
        break;
   case 'POST'://Metodo POST entro por aca
        resuelvePost();
@@ -58,26 +54,23 @@
            $recurso = array_shift($array_uri);
            //$recurso = array_shift($array_uri);
            $nro_producto = array_shift($array_uri);
-           if(empty($nro_producto)){
+           if(empty($nro_producto))
                header('HTTP/1.1 400 Bad Request');
-           }
            else{
               //tengo que chequear que lo que siga tenga el formato de url requerido, sino, devuelvo un 400
               if(is_numeric($nro_producto)){
-                if(count($array_uri)==0){
+                if(count($array_uri)==0){//si esta todo bien, resuelvo el PUT
                    parse_str(file_get_contents('php://input'), $_PUT);
                    echo resuelvePut($nro_producto,$_PUT);
                 }
                 else
                    header('HTTP/1.1 400 Bad Request');
               }
-              else{
+              else
                header('HTTP/1.1 400 Bad Request');
-              }
            }
-        }else{// Sólo se aceptan que comienzen con productos
+        }else// Sólo se aceptan que comienzen con productos
           header('HTTP/1.1 404 Not Found');
-        }
         break;
   case 'DELETE'://Metdodo DELETE entro por aca
         $recurso = array_shift($array_uri);
@@ -85,30 +78,24 @@
         if($recurso == 'api'){
            $recurso = array_shift($array_uri);
            $nro_producto = array_shift($array_uri);
-           if(empty($nro_producto)){//no especifico que producto borrar
+           if(empty($nro_producto))//no especifico que producto borrar, mando un error
                header('HTTP/1.1 400 Bad Request');
-           }
            else{
               //tengo que chequear que lo que siga tenga el formato de url requerido, sino, devuelvo un 400
               if(is_numeric($nro_producto)){
-                if(count($array_uri)==0){
+                if(count($array_uri)==0)//si esta bien la url, resuelvo el DELETE
                    echo resuelveDelete($nro_producto);
-                }
                 else
                    header('HTTP/1.1 400 Bad Request');
               }
-              else{
+              else
                header('HTTP/1.1 400 Bad Request');
-              }
            }
-        }else{// Sólo se aceptan que comienzen con productos
+        }else// Sólo se aceptan que comienzen con productos
           header('HTTP/1.1 404 Not Found');
-        }
        break;
   default://Otros metodos NO permitidos por el API
         header('HTTP/1.1 405 Method not allowed');
         header('Allow: GET, PUT, DELETE, POST');
  }
-
-
 ?>
